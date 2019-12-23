@@ -26,10 +26,10 @@ float Fahrenheit = 0;
 
 
 /****** Moonlight variables ******/
-const int moonlightPin = 9;
-int moonlightState = 0;         // moonlight state.  0 is off, 1 is on
-byte moonlightBrightness = 255; // moonlight brightness (0 off to 255 on)
-int moonlightStep = 5;          // step for moonlight count
+// const int moonlightPin = 9;
+// int moonlightState = 0;         // moonlight state.  0 is off, 1 is on
+// byte moonlightBrightness = 255; // moonlight brightness (0 off to 255 on)
+// int moonlightStep = 5;          // step for moonlight count
 
 /****** Lamp variables *******/
 // int MAX_PWM = 240;           // old Pulse Width Modulation max (0-255)
@@ -48,7 +48,7 @@ void setup() {
   
   Serial.begin(9600); // starts serial connection
   sensors.begin();                                  // Start temperature sensors
-  pinMode(moonlightPin, OUTPUT);                    // initialize moonlight output
+  // pinMode(moonlightPin, OUTPUT);                    // initialize moonlight output
   pinMode(AC_pin, OUTPUT);                          // Set the Triac pin as output
   attachInterrupt(0, zero_cross_detect, RISING);    // Attach an Interupt to Pin 2 (interupt 0) for Zero Cross Detection
   Timer1.initialize(freqStep);                      // Initialize TimerOne library for the freq we need
@@ -80,13 +80,17 @@ void dim_check() {
       i++;  // increment time step counter                     
     }                                
   }    
-}             
+}
+
+// convert data to package to send over serial
+void buildSerialPackage() {}
 
 void loop() {
   // put your main code here, to run repeatedly:
 
   inputString = Serial.read(); // read the serial input
-  Serial.print(inputString);  // debug
+  Serial.print("Input: ");
+  Serial.println(inputString);  // debug
   
   /******* Temperature Logic ******/
 
@@ -96,18 +100,18 @@ void loop() {
   sensors.requestTemperatures();
   Celcius = sensors.getTempCByIndex(0);
   Fahrenheit = sensors.toFahrenheit(Celcius);
-  Serial.print("C: ");
+  Serial.print(" C  ");
   Serial.print(Celcius);
-  Serial.print("F: ");
-  Serial.print(Fahrenheit);
-  delay(1000);  
-  
+  Serial.print(" F  ");
+  Serial.println(Fahrenheit);
+  // Serial.write("Hello");  // write value to Pi
+  // delay(1000);
   /****** Serial Input Logic *******/
   switch(inputString) {
     
     // AC relay controls
     case 'b': // brighten lamp array
-      Serial.print("Brightening lamp");
+      Serial.println("Brightening lamp");
       if (dim>5) {
         dim = dim - pas;
         if (dim<0) {
@@ -116,7 +120,7 @@ void loop() {
       }
       break;
     case 'd': // dim lamp array
-      Serial.print("Dimming lamp");
+      Serial.println("Dimming lamp");
       if (dim<127) {
         dim = dim + pas;
         if (dim>127) {
@@ -126,7 +130,7 @@ void loop() {
       break;
       
     // moonlight controls
-    case 'm': // turn on moonlights
+    /*case 'm': // turn on moonlights
       Serial.print("Turn on moonlights");
       moonlightState = 1;
       break;
@@ -144,13 +148,13 @@ void loop() {
       Serial.print("Dimming moonlights");
       if(moonlightBrightness > 0) {
         moonlightBrightness = moonlightBrightness - moonlightStep;
-      }
+      }*/
     default:  // do nothing
       break;
 
-    if(moonlightState) {
+    /*if(moonlightState) {
       analogWrite(moonlightPin, moonlightBrightness);
-    }
+    }*/
     
     dim2 = 255 - 2 * dim;
     if (dim2<0) {
