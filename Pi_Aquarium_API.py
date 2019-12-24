@@ -14,13 +14,21 @@ def home():
     
 @app.route('/getaquariumvitals', methods=['GET'])
 def stats():
+    print("Get stats")
+    ser.write(bytes(str(3), "ascii"))
     if(ser.in_waiting > 0):
         line = ser.readline()
         print(line)
         return line
+@app.route('/raiselights', methods=['GET'])
 def raiselights():
+    print("Sent brighten lamp command")
+    ser.write(bytes(str(1), "ascii"))
     return '<p>lights raised</p>'
+@app.route('/lowerlights', methods=['GET'])
 def lowerlights():
+    print("Sent dim lamp command")
+    ser.write(bytes(str(2), "ascii"))
     return '<p>lights lowered</p>'
 
 #while 1:

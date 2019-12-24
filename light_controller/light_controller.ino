@@ -14,7 +14,7 @@
 
 
 /****** Serial Input variables ****/
-char inputString;                // serial input code
+// char inputString;                // serial input code
 
 /****** Temperature variables *****/
 // const int temperaturePin = 1;   // temperature probe input
@@ -86,82 +86,88 @@ void dim_check() {
 void buildSerialPackage() {}
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  
+  if(Serial.available() > 0) {
+    int input = Serial.parseInt();
+    Serial.println(String(input));
+    /****** Serial Input Logic *******/
+    switch(input) {
+      
+      // AC relay controls
+      case 1: // brighten lamp array
+        Serial.println("Brightening lamp");
+        if (dim>5) {
+          dim = dim - pas;
+          if (dim<0) {
+            dim=0;
+          }
+        }
+        break;
+      case 2: // dim lamp array
+        Serial.println("Dimming lamp");
+        if (dim<127) {
+          dim = dim + pas;
+          if (dim>127) {
+            dim=128;
+          }
+        }
+        break;
+      case 3: // return aquarium system state
+        sensors.requestTemperatures();
+        Celcius = sensors.getTempCByIndex(0);
+        Fahrenheit = sensors.toFahrenheit(Celcius);
+        Serial.print("#T");
+        Serial.print(Celcius);
+        Serial.print("#D");
+        Serial.print(dim);
+        Serial.print("#E");
+        Serial.println(dim2);
+        break;
+        
+      // moonlight controls
+      /*case 'm': // turn on moonlights
+        Serial.print("Turn on moonlights");
+        moonlightState = 1;
+        break;
+      case 'o': // turn off moonlights
+        Serial.print("Turn off moonlights");
+        moonlightState = 0;
+        break;
+      case 'e': // brighten moonlight
+        Serial.print("Brighten moonlights");
+        if(moonlightBrightness > 255) {
+          moonlightBrightness = moonlightBrightness + moonlightStep;
+        }
+        break;
+      case 'f': // dim moonlight
+        Serial.print("Dimming moonlights");
+        if(moonlightBrightness > 0) {
+          moonlightBrightness = moonlightBrightness - moonlightStep;
+        }*/
+      default:  // do nothing
+        Serial.println("Command not found");
+        break;
+  
+      /*if(moonlightState) {
+        analogWrite(moonlightPin, moonlightBrightness);
+      }*/
+      
+      dim2 = 255 - 2 * dim;
+      if (dim2<0) {
+        dim2 = 0;
+      }
+  
+    }
+     
+  }
 
-  inputString = Serial.read(); // read the serial input
-  Serial.print("Input: ");
-  Serial.println(inputString);  // debug
   
   /******* Temperature Logic ******/
 
-  // temperature = analogRead(temperaturePin);   // read pin for temperature
-  // temp = temp * 0.48828125;   // convert output (mv) to readable celcius
-  // Serial.write(temperature);  // return temperature reading
-  sensors.requestTemperatures();
-  Celcius = sensors.getTempCByIndex(0);
-  Fahrenheit = sensors.toFahrenheit(Celcius);
-  Serial.print(" C  ");
-  Serial.print(Celcius);
-  Serial.print(" F  ");
-  Serial.println(Fahrenheit);
-  // Serial.write("Hello");  // write value to Pi
-  // delay(1000);
-  /****** Serial Input Logic *******/
-  switch(inputString) {
-    
-    // AC relay controls
-    case 'b': // brighten lamp array
-      Serial.println("Brightening lamp");
-      if (dim>5) {
-        dim = dim - pas;
-        if (dim<0) {
-          dim=0;
-        }
-      }
-      break;
-    case 'd': // dim lamp array
-      Serial.println("Dimming lamp");
-      if (dim<127) {
-        dim = dim + pas;
-        if (dim>127) {
-          dim=128;
-        }
-      }
-      break;
-      
-    // moonlight controls
-    /*case 'm': // turn on moonlights
-      Serial.print("Turn on moonlights");
-      moonlightState = 1;
-      break;
-    case 'o': // turn off moonlights
-      Serial.print("Turn off moonlights");
-      moonlightState = 0;
-      break;
-    case 'e': // brighten moonlight
-      Serial.print("Brighten moonlights");
-      if(moonlightBrightness > 255) {
-        moonlightBrightness = moonlightBrightness + moonlightStep;
-      }
-      break;
-    case 'f': // dim moonlight
-      Serial.print("Dimming moonlights");
-      if(moonlightBrightness > 0) {
-        moonlightBrightness = moonlightBrightness - moonlightStep;
-      }*/
-    default:  // do nothing
-      break;
+  
+  
 
-    /*if(moonlightState) {
-      analogWrite(moonlightPin, moonlightBrightness);
-    }*/
-    
-    dim2 = 255 - 2 * dim;
-    if (dim2<0) {
-      dim2 = 0;
-    }
-
-  }
+  
 
   // old loop code
    /* for(i=240;i>20;i--) {
