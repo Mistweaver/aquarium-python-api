@@ -20,7 +20,7 @@ const int LAMP_MAX = 240;           // Max lamp brightness
 const int LAMP_MIN = 40;            // min lamp brightness
 
 /****** Temperature Variables ******/
-OneWire OneWire(ONE_WIRE_BUS);
+OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 void setup() {
@@ -33,7 +33,7 @@ void returnAquariumStatus() {
     sensors.requestTemperatures();
     float celciusTemperature = sensors.getTempCByIndex(0);
     Serial.print("#T");
-    Serial.print(Celcius);
+    Serial.print(celciusTemperature);
     Serial.print("#L");
     Serial.print(lampState);
     Serial.print("#PWM");
@@ -75,7 +75,7 @@ void loop() {
     }
 
     // write PWM value to ac dimmer pin
-    if(lampState) {
+    if(lampState == 1) {
         analogWrite(AC_PIN, i);
     }
 }
