@@ -11,6 +11,13 @@ void loop() {
     char input = Serial.read();
     Serial.println(input);
   }*/
+
+  /*
+    if(Serial.available()) {
+      int inputByte = Serial.read();
+      Serial.println(inputByte);
+    }
+  */
   
   if(Serial.available() > 0) {
     int count = Serial.parseInt();

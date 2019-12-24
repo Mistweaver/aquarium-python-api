@@ -1,4 +1,7 @@
 /*AC Light Control
+  
+  https://www.instructables.com/id/Arduino-controlled-light-dimmer-The-circuit/
+
  
  Updated by Robert Twomey 
  
