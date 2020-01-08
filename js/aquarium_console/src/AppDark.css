@@ -1,0 +1,28 @@
+
+/*Dark Colors As hex codes */
+
+.dark-color-primary-0 { color: #121212 }	/* Main Primary color */
+.dark-color-primary-1 { color: #898787 }
+.dark-color-primary-2 { color: #525252 }
+.dark-color-primary-3 { color: #000000 }
+.dark-color-primary-4 { color: #030202 }
+
+.dark-mode {
+    /*background-color: #282c34;*/
+    background-color: #030202;
+    color: white;
+    min-height: 100vh;
+}
+
+.dark-mode .card {
+    background-color: #121212;
+}
+
+.dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6, .dark-mode p, .dark-mode .icon{
+    color: #6F58FF;
+}
+
+.dark-mode Button {
+    color: #6F58FF;
+    border: 2px solid #6F58FF;
+}
