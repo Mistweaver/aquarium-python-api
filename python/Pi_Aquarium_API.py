@@ -43,6 +43,12 @@ def lowerlights():
     ser.write(bytes(str(4), "ascii"))
     return '<p>lights lowered</p>'
 
+@app.route('/lightningflash', methods=['GET'])
+def lightningflash():
+    print("Flash of lightning!")
+    ser.write(bytes(str(6), "ascii"))
+    return '<p>Flash</p>'
+
 #while 1:
     #if(ser.in_waiting > 0):
         #line = ser.readline()
