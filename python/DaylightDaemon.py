@@ -24,7 +24,10 @@ api_parameters = {
     "formatted": 0 # a value of 1 brings back readable form, 0 brings back raw
 }
 
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
+#Linux
+#ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
+#Windows
+ser = serial.Serial('COM3', 9600, timeout = 1)
 
 currentDateTime = datetime.now()
 currentDaylightData = {}
