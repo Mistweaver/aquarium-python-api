@@ -105,7 +105,8 @@ def checkLightSettings():
             print("The sun has set.  Turning off lights")
             # turn off lights
             lightOn = False
-            print(lightOn)
+            ser.write(bytes(str(2), "ascii"))
+            print("Lights on: ", lightOn)
         
         print("Mapping daylight curve")
         # wave equation = A * sin(B(x + C)) + D
@@ -135,6 +136,7 @@ def checkLightSettings():
         if(currentDateTime > sunrise_datetime_object and currentDateTime < sunset_datetime_object):
             print("Turning on lights")
             lightOn = True
+            ser.write(bytes(str(1), "ascii"))
             print("Light on: ", lightOn)
 
 
