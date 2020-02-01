@@ -111,27 +111,28 @@ def checkLightSettings():
             ser.write(bytes(str(2), "ascii"))
             print("Lights on: ", lightOn)
         
-        print("Mapping daylight curve")
-        # wave equation = A * sin(B(x + C)) + D
-        # A - amplitude
-        # B - period
-        # C - phase shift (positive to the left)
-        # D - vertical shift (in this case equal to the amplitude)
-        # if LightMax = 220 and lightMin = 27
-        amplitude = (lightMax - lightMin)
-        vertical_shift = lightMin
-        period_coefficient = 2 * math.pi / (currentDaylightData['results']['day_length'] / 60)   # convert to seconds
-        period = 1 / 2
+        else:
+            print("Mapping daylight curve")
+            # wave equation = A * sin(B(x + C)) + D
+            # A - amplitude
+            # B - period
+            # C - phase shift (positive to the left)
+            # D - vertical shift (in this case equal to the amplitude)
+            # if LightMax = 220 and lightMin = 27
+            amplitude = (lightMax - lightMin)
+            vertical_shift = lightMin
+            period_coefficient = 2 * math.pi / (currentDaylightData['results']['day_length'] / 60)   # convert to seconds
+            period = 1 / 2
 
-        # numeric representation of curve on 1/26/2020
-        # 193 * sin(pi * {x} / 626.1) + 27
+            # numeric representation of curve on 1/26/2020
+            # 193 * sin(pi * {x} / 626.1) + 27
 
-        light_intensity = amplitude * math.sin(period_coefficient * period * ((sunset_datetime_object - currentDateTime).seconds / 60)) + vertical_shift
-        print("Light intensity: ", light_intensity)
+            light_intensity = amplitude * math.sin(period_coefficient * period * ((sunset_datetime_object - currentDateTime).seconds / 60)) + vertical_shift
+            print("Light intensity: ", light_intensity)
 
-        # write light intensity to controller
-        print("Writing to controller: ", int(round(light_intensity, 0)))
-        ser.write(bytes(str(int(light_intensity)), "ascii"))
+            # write light intensity to controller
+            print("Writing to controller: ", int(round(light_intensity, 0)))
+            ser.write(bytes(str(int(light_intensity)), "ascii"))
 
     # if light is off
     elif(not lightOn):
@@ -166,7 +167,7 @@ def run():
 
         # if current day does not match previous day
             # fetch new day data and set new daylight settings
-
+        
         time.sleep(10)
             
 

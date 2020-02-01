@@ -6,7 +6,9 @@ import flask
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
+#ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
+# Windows
+ser = serial.Serial('COM3', 9600, timeout = 1)
 
 @app.route('/', methods=['GET'])
 def home():
