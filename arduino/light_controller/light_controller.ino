@@ -39,46 +39,44 @@ void returnAquariumStatus() {
     Serial.println(i);
 }
 
-void loop() {
-    if(Serial.available() > 0) {                // execute code if serial input present
+void readInput() {
+// if(Serial.available() > 0) {                // execute code if serial input present
+    while(Serial.available() > 0) {
         int input = Serial.parseInt();          // parse integer from serial input
         // Serial.println(String(input))        // Debug to check inputs
 
-        switch(input) {
-            // AC relay controls
-            case 1: // turn on lamp
-                Serial.println("Turning lamp on");
-                lampState = 1;
-                break;
-            case 2: // turn off lamp
-                Serial.println("Turning lamp off");
-                lampState = 0;
-                break;
-            case 3: // brighten lamp array
-                // Serial.println("Brightening lamp");      // Debug
-                i = i + 5;
-                if(i > LAMP_MAX) {  i = LAMP_MAX;   }
-                break;
-            case 4: // dim lamp array
-                // Serial.println("Dimming lamp");
-                i = i - 5;
-                if(i < LAMP_MIN) {  i = LAMP_MIN;   }
-                break;
-            case 5: // return aquarium system state
-                // Serial.println("Returning squarium state");
-                returnAquariumStatus();
-                break;
-            case 27 ... 220:
-                i = input;
-                returnAquariumStatus();
-            default:
-                Serial.println("Command not found");
-                break;
+
+        if(input == 1) {
+            Serial.println("Turning lamp on");
+            lampState = 1;
+            Serial.println(lampState);
+        } else if(input == 2) {
+            Serial.println("Turning lamp off");
+            lampState = 0;
+            Serial.println(lampState);
+        } else if(input == 3) {
+            i = i + 5;
+            if(i > LAMP_MAX) {  i = LAMP_MAX;   }
+        } else if(input == 4) {
+            i = i - 5;
+            if(i < LAMP_MIN) {  i = LAMP_MIN;   }
+        } else if(input == 5) {
+            returnAquariumStatus();
+        } else if(input >= 27 || input <= 220) {
+            Serial.print("Setting lamp level: ");
+            Serial.println(input);
+            i = input;
+            Serial.println(i);
         }
     }
+}
+
+void loop() {
+    
 
     // write PWM value to ac dimmer pin
     if(lampState == 1) {
+
         analogWrite(AC_PIN, i);
     }
 }
