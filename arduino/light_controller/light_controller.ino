@@ -72,11 +72,11 @@ void readInput() {
 }
 
 void loop() {
-    
+    readInput();
 
     // write PWM value to ac dimmer pin
     if(lampState == 1) {
-
+        Serial.println("Lamp on");
         analogWrite(AC_PIN, i);
     }
 }
