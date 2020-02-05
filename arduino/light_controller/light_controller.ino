@@ -54,6 +54,8 @@ void readInput() {
             Serial.println("Turning lamp off");
             lampState = 0;
             Serial.println(lampState);
+            analogWrite(AC_PIN, 0);
+
         } else if(input == 3) {
             i = i + 5;
             if(i > LAMP_MAX) {  i = LAMP_MAX;   }
