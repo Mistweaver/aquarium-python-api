@@ -26,3 +26,7 @@
     color: #6F58FF;
     border: 2px solid #6F58FF;
 }
+
+.dark-mode .displayOption:hover {
+	background-color: rgba(111, 88, 255, 0.3);
+}

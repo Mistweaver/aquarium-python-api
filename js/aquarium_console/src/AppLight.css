@@ -32,3 +32,7 @@
     background-color: white;
     color: #282c34;
 }
+
+.light-mode .displayOption:hover {
+	background-color: rgba(38, 129, 255, 0.3);
+}

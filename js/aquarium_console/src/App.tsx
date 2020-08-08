@@ -4,75 +4,47 @@ import './AppDark.css';
 import './AppLight.css';
 import { FormControlLabel, Grid } from '@material-ui/core';
 import { IOSSwitch } from './iosswitch/IosSwitch';
-import ControlList from './controlbox/ControlList';
 import AquariumStatus from './aquariumstate/AquariumStatus';
-import { LineChart, CartesianGrid, XAxis, YAxis, Legend, Line, Tooltip } from 'recharts';
-import LightControl from './lighting/LightControl';
+import { getDaylightData } from './functions/DaylightAPI';
+
+import SunIcon from '@material-ui/icons/Brightness1';
+import MoonIcon from '@material-ui/icons/Brightness3';
+import { tempData } from './data/TestData';
+import { DISPLAY_LIGHT_CONTROLS, DISPLAY_FAUNA_FLORA, DISPLAY_TEMPERATURE_DATA, DISPLAY_ATMOSPHERE_DATA } from './displays/DIsplayModes';
+import TemperatureDisplay from './displays/TemperatureDisplay';
+import FaunaFloraDisplay from './displays/FaunaFloraDisplay';
+import LightControl from './displays/LightControl';
+import AtmosphereDisplay from './displays/AtmosphereDisplay';
 
 const LIGHT_MODE = "light-mode";
 const DARK_MODE = "dark-mode";
 
-const data = [
-	{
-	  "name": "Page A",
-	  "uv": 4000,
-	  "pv": 2400,
-	  "amt": 2400
-	},
-	{
-	  "name": "Page B",
-	  "uv": 3000,
-	  "pv": 1398,
-	  "amt": 2210
-	},
-	{
-	  "name": "Page C",
-	  "uv": 2000,
-	  "pv": 9800,
-	  "amt": 2290
-	},
-	{
-	  "name": "Page D",
-	  "uv": 2780,
-	  "pv": 3908,
-	  "amt": 2000
-	},
-	{
-	  "name": "Page E",
-	  "uv": 1890,
-	  "pv": 4800,
-	  "amt": 2181
-	},
-	{
-	  "name": "Page F",
-	  "uv": 2390,
-	  "pv": 3800,
-	  "amt": 2500
-	},
-	{
-	  "name": "Page G",
-	  "uv": 3490,
-	  "pv": 4300,
-	  "amt": 2100
-	}
-]
+
+
 	
 interface AppState {
 	mode: string;
+	latitude: number;
+	longitude: number;
+	display: string;
 }
 
 class App extends React.Component<{}, AppState> {
 	constructor(props: {}) {
 		super(props);
 		this.state = {
-			mode: LIGHT_MODE
+			mode: DARK_MODE,
+			latitude: 33.4942,
+			longitude: -111.9261,
+			display: DISPLAY_LIGHT_CONTROLS
 		}
 		
 		this.changeAppColorMode = this.changeAppColorMode.bind(this);
+		this.changeDisplay = this.changeDisplay.bind(this);
 	}
 
 	componentDidMount() {
-		let todaysDate = new Date();
+		
 	}
 
 	private changeAppColorMode() {
@@ -84,22 +56,41 @@ class App extends React.Component<{}, AppState> {
 		}
 	}
 
+	private changeDisplay(displayOption: string) {
+		this.setState({ display: displayOption });
+	}
+
 	public render() {
-		const { mode } = this.state;
+		const { mode, display } = this.state;
+		let todaysDate = new Date();
+
 		return (
 			<div className="App">
 				<div className={mode === DARK_MODE ? DARK_MODE : LIGHT_MODE}>
 					<div id="main-header">
-						<h4>Aquarium Command Console</h4>
-						<FormControlLabel
-							control={
-								<IOSSwitch
-									checked={mode === DARK_MODE}
-									onChange={this.changeAppColorMode}
-								/>
+						<div style={{display: 'flex', fontSize: '12pt', flexDirection: 'column'}}>
+							<span>AquaOS</span>
+							<span>{todaysDate.toLocaleString()}</span>
+						</div>
+						<div style={{display: 'flex', alignItems: 'center'}}>
+							<FormControlLabel
+								control={
+									<IOSSwitch
+										checked={mode === DARK_MODE}
+										onChange={this.changeAppColorMode}
+									/>
+								}
+								label=""
+								style={{ marginRight: 10 }}
+							/>
+							{
+								mode === DARK_MODE ?
+								<MoonIcon style={{color: 'white'}} />
+								:
+								<SunIcon style={{color: 'yellow'}} />
 							}
-							label="Dark Mode"
-						/>
+						</div>
+						
 					</div>
 					<div style={{padding: 15}}>
 						<Grid container spacing={2}>
@@ -113,19 +104,21 @@ class App extends React.Component<{}, AppState> {
 									atmosphericTemperature={68}
 									atmosphericHumidity={45.3}
 									waterLevel={11}
+									selectDisplay={this.changeDisplay}
+									currentDisplaySelection={display}
 								/>
-								<LightControl />
 							</Grid>
 							<Grid item xs={9} className="color-secondary-1-2">
-								<LineChart width={830} height={400} data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-									<CartesianGrid strokeDasharray="3 3" />
-									<XAxis dataKey="name" />
-									<YAxis />
-									<Tooltip />
-									<Legend />
-									<Line type="monotone" dataKey="pv" stroke="#8884d8" />
-									<Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-								</LineChart>
+								{ display === DISPLAY_TEMPERATURE_DATA && <TemperatureDisplay /> }
+								{ display === DISPLAY_LIGHT_CONTROLS && 
+									<LightControl 
+										latitude={this.state.latitude}
+										longitude={this.state.longitude}
+									/> 
+								}
+								{ display === DISPLAY_ATMOSPHERE_DATA && <AtmosphereDisplay /> }
+								{ display === DISPLAY_FAUNA_FLORA && <FaunaFloraDisplay /> }
+
 							</Grid>
 						</Grid>
 					</div>
