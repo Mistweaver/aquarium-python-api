@@ -12,11 +12,17 @@
 #define ONE_WIRE_BUS 5              // Temperature Probe data wire pin
 
 /****** Lamp Variables ******/
-int lampState = 0;                  // lamp starts off (0 = OFF, 1 = ON)
 volatile int i = 40;                // Dimmer PWM value
+char mode = 'A';
+
 const int AC_PIN = 3;               // AC dimmer board data wire pin
 const int LAMP_MAX = 240;           // Max lamp brightness
 const int LAMP_MIN = 40;            // min lamp brightness
+
+// modes for lighting
+const char manualMode = 'M';
+const char lightningMode = 'L';
+const char autoMode = 'A';
 
 /****** Temperature Variables ******/
 OneWire oneWire(ONE_WIRE_BUS);
@@ -32,14 +38,12 @@ void returnAquariumStatus() {
     sensors.requestTemperatures();
     float celciusTemperature = sensors.getTempCByIndex(0);
     Serial.print("#T");
-    Serial.print(celciusTemperature);
-    Serial.print("#L");
-    Serial.print(lampState);
+    Serial.print(celciusTemperature);\
     Serial.print("#PWM");
     Serial.println(i);
 }
 
-void triggerLightning() {
+/*void triggerLightning() {
     int flashCount = random (3, 15);        // Min. and max. number of flashes each loop
     int flashBrightnessMin =  40;           // flash min. brightness (40-225)
     int flashBrightnessMax =  225;          // flash max. brightness (40-225)
@@ -70,51 +74,32 @@ void triggerLightning() {
     Serial.print(F("Pausing before next loop, milliseconds: "));
     Serial.println(loopDelay);
     delay(loopDelay);
+}*/
+
+void readInput() {
+  if(Serial.available() > 0) {                // execute code if serial input present
+        int input = Serial.parseInt();          // parse integer from serial input
+        Serial.println(String(input)) ;       // Debug to check inputs
+
+        if(input == 250) {
+            Serial.println("Returning aquarium status");        // Debug to check inputs
+            returnAquariumStatus(); 
+        } else if(input == 251) {
+            Serial.println("Setting Lightning Mode");        // Debug to check inputs
+        } else if(input < 250 && input >=0) {
+            Serial.println("Setting Light Level");        // Debug to check inputs
+            analogWrite(AC_PIN, i);
+        } else {
+           // do nothing
+           Serial.println("No option found");        // Debug to check inputs
+        }
+        
+    }
+
 }
 
 void loop() {
-    if(Serial.available() > 0) {                // execute code if serial input present
-        int input = Serial.parseInt();          // parse integer from serial input
-        Serial.println(String(input))        // Debug to check inputs
-
-        if(input == 250) {
-            returnAquariumStatus(); 
-        } else if(input === 251) {
-            triggerLightning();
-        } else {
-            analogWrite(AC_PIN, i);
-        }
-        /*switch(input) {
-            // AC relay controls
-            case 1: // turn on lamp
-                Serial.println("Turning lamp on");
-                lampState = 1;
-                break;
-            case 2: // turn off lamp
-                Serial.println("Turning lamp off");
-                lampState = 0;
-                break;
-            case 3: // brighten lamp array
-                // Serial.println("Brightening lamp");      // Debug
-                i = i + 5;
-                if(i > LAMP_MAX) {  i = LAMP_MAX;   }
-                break;
-            case 4: // dim lamp array
-                // Serial.println("Dimming lamp");
-                i = i - 5;
-                if(i < LAMP_MIN) {  i = LAMP_MIN;   }
-                break;
-            case 5: // return aquarium system state
-                // Serial.println("Returning squarium state");
-                break;
-            default:
-                Serial.println("Command not found");
-                break;
-        }*/
-    }
-
-    // write PWM value to ac dimmer pin
-    // if(lampState == 1) {
-        analogWrite(AC_PIN, i);
-    // }
+  readInput();
+  analogWrite(AC_PIN, i);
+  // triggerLightning();
 }
