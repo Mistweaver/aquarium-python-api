@@ -40,6 +40,9 @@ void returnAquariumStatus() {
 }
 
 void triggerLightning() {
+    // add yield somewhere in here if the loop is longer
+    // than 100ms
+    // yield();
     int flashCount = random (3, 15);        // Min. and max. number of flashes each loop
     int flashBrightnessMin =  40;           // flash min. brightness (40-225)
     int flashBrightnessMax =  225;          // flash max. brightness (40-225)
