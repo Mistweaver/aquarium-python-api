@@ -12,12 +12,12 @@
 #define ONE_WIRE_BUS 5              // Temperature Probe data wire pin
 
 /****** Lamp Variables ******/
-volatile int i = 40;                // Dimmer PWM value
+volatile int i = 0;                // Dimmer PWM value
 char mode = 'A';
 
 const int AC_PIN = 3;               // AC dimmer board data wire pin
 const int LAMP_MAX = 240;           // Max lamp brightness
-const int LAMP_MIN = 40;            // min lamp brightness
+const int LAMP_MIN = 0;            // min lamp brightness
 
 // modes for lighting
 const char manualMode = 'M';
@@ -92,6 +92,7 @@ void readInput() {
             Serial.println("Setting Lightning Mode");        // Debug to check inputs
         } else if(input < 250 && input >=0) {
             Serial.println("Setting Light Level");        // Debug to check inputs
+            i = input;
             analogWrite(AC_PIN, i);
         } else {
            // do nothing
