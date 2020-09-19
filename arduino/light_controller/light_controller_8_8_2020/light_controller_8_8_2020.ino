@@ -1,4 +1,4 @@
-         ls/*
+/*
     Aquarium Light Controller
     Board: Krida PWM1ChKrida PWM AC Light Dimmer Module 50Hz 60Hz For Arduino and Raspberry LED Smart Home
     Temperature Probe: DS18B20
@@ -100,11 +100,14 @@ void readInput() {
         }
         
     }
+    analogWrite(AC_PIN, i);
 
 }
 
 void loop() {
   readInput();
+  Serial.println("Writing");
+  Serial.println(i);
   analogWrite(AC_PIN, i);
   // triggerLightning();
 }
