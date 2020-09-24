@@ -3,7 +3,7 @@
 #include <TimerOne.h>               // Used for timer interceipt
 #include <OneWire.h>                // Temperature probe
 #include <DallasTemperature.h>      // Temperature probe
-#include <RBDDimmer.h>
+#include <RBDdimmer.h>
 
 
 #define USE_SERIAL Serial

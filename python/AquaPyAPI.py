@@ -25,7 +25,10 @@ for Port in Ports:
         TargetPort = StringPort.split(" ")[0]
         print(TargetPort)
         print("[INFO] Use {}...".format(TargetPort))
-
+    elif "/dev/ttyACM0" in StringPort:
+        TargetPort = StringPort.split(" ")[0]
+        print(TargetPort)
+        print("[INFO] Use {}...".format(TargetPort))
 if TargetPort is None:
     print("[ERROR] No target COM port found!")
     exit()
