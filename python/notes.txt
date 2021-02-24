@@ -1,7 +1,0 @@
-1) Access home network from internet
-2) Home network needs to set up forwarding requests to devices
-3) Secure home network
-4) Setup 3 python scripts
-    a) Flask API that allows commands across the network
-    b) Script that sends automated requests to the API or controller at a given interval
-    c) Script that listens for Serial responses from the controller and records them to database
