@@ -1,2 +1,3 @@
-# aquarium_light_controller
-Microcontroller code using zero crossing to dim and brighten an AC powered parallel circuit of LED bulbs
+# aquarium-python-api
+
+API and MQTT code for sending and requesting data from the house network.
