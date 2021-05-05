@@ -1,11 +1,13 @@
 #!/usr/bin/env python
+from random import random
 import flask
-import serial
 from flask import request
-import serial.tools.list_ports
+import serial.tools.list_ports  # pyserial
+
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+
 # ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
 # Windows
 # ser = serial.Serial('COM3', 9600, timeout=1)
@@ -35,29 +37,25 @@ if TargetPort is None:
 
 # Open the COM port
 ser = serial.Serial(TargetPort, 9600, timeout=5)
-if ser.isOpen() == False:
+if not ser.isOpen():
     ser.open()
 
 
-@app.route('/aquariumvitals', methods=['GET'])
-def stats():
-    ser.write(bytes(str(250), "ascii"))
-    return "<p>Good</p>"
+@app.route('/', methods=['GET'])
+def home():
+    return '<h1>Aquarium Monitor v0.1</h1>'
 
 
-# @app.route('/login',methods = ['POST', 'GET'])
-@app.route('/lights', methods=['POST'])
-def adjustLights():
+@app.route('/http/lights', methods=['POST'])
+def change():
     new_illumination = request.form['illumination']
     ser.write(bytes(str(new_illumination), "ascii"))
     return "<p>Good</p>"
 
 
-# if request.method == 'POST':
-# user = request.form['name']
-# return redirect(url_for('dashboard',name = user))
-# else:
-# user = request.args.get('name')
-# return render_template('login.html')
+def run():
+    print("API on")
 
-app.run()
+
+if __name__ == '__main__':
+    run()

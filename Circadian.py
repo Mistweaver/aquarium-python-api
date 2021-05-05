@@ -5,36 +5,37 @@
 import datetime
 import json
 import math
+import sys
 import time
 import requests
 
+import yaml
 import serial as serial
 from dateutil.parser import parse
 from dateutil import tz
+from os import path
 
-location_parameters = {
-    # Rio Negro, BRA 0°25'25.9"S 64°39'23.0"W -0.423861, -64.656390
-    # "lat": -0.423861,   # latitude
-    # "lng": -64.656390,  # longitude
-    # Phoenix
-    "lat": 33.4942,  # latitude
-    "lng": -111.9261,  # longitude
-    # "date": "today",  # this is the default value, but can be used for custom day
-    "formatted": 0  # a value of 1 brings back readable form, 0 brings back raw
-}
-
-# Linux
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
-# Windows
-# ser = serial.serial('COM3', 9600, timeout=1)
+if sys.platform.startswith('linux'):
+    # Linux OS
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+elif sys.platform.startswith('win32'):
+    # Windows
+    ser = serial.serial('COM3', 9600, timeout=1)
 
 currentDateTime = datetime.datetime.now()
 currentDaylightData = {}
 HERE = tz.tzlocal()
 UTC = tz.gettz('UTC')
-# lightOn = False
-lightMin = 30
-lightMax = 145
+
+lightMin = 0
+lightMax = 100
+
+config_path = path.join(path.dirname(__file__), 'config.yaml')
+with open(config_path) as file:
+    # The FullLoader parameter handles the conversion from YAML
+    # scalar values to Python the dictionary format
+    config = yaml.load(file, Loader=yaml.FullLoader)
+    # print(location_list)
 
 
 # create a formatted string of the Python JSON object
@@ -43,12 +44,31 @@ def json_print(obj):
     print(text)
 
 
+# format for API query
+# location_parameters = {
+#   "lat": 33.4942,  # latitude
+#   "lng":,  # longitude
+#   "date": "today",  # this is the default value, but can be used for custom day
+#   "formatted": 0  # a value of 1 brings back readable form, 0 brings back raw
+# }
+
+# build the location query with the above format for the sunrise-sunset API
+def build_location_query():
+    query = {
+        'lat': config.get('locations').get('phoenix').get('latitude'),
+        'lng': config.get('locations').get('phoenix').get('longitude'),
+        'formatted': 0
+    }
+    return query
+
+
 # get sunrise and sunset data from the web
 def get_today_sunrise_sunset():
     global currentDaylightData
 
+    location_parameters = build_location_query()
     response = requests.get('https://api.sunrise-sunset.org/json', params=location_parameters)
-    if 200 <= response.status_code < 300 :
+    if 200 <= response.status_code < 300:
         # responseStatus = (response.status_code)
         print("Data for " + str(currentDateTime.date()))
         # json_print(response.json())
